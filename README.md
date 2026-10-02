@@ -1,4 +1,4 @@
-# Cube-Rolling Tour
+# Cube-Rolling Tours
 
 This is problem number 9 from `Scientific American` magazine, issue _1965-11_. The solution appears in issue _1965-12_. Additionally, it appears in book `Mathematical Carnival` also by [Martin Gardner](https://en.wikipedia.org/wiki/Martin_Gardner).
 
@@ -30,7 +30,11 @@ Both problems have unique solutions, not counting rotations and reflections of t
 
 In this repo a solver of _Problem 1_ aka `Red-Faced Cube` is implemented in [rust](https://rust-lang.org/).
 
-```bash
+> I just realized that we can create boards with sizes other than 8x8. In these cases, there may exist more than one solutions. The current implementation exits when finding the first one.
+
+### 8x8
+
+```text
 ╶─────┐ ┌─────╴
 ┌─┐ ┌─┘ └─┐ ┌─┐
 │ └─┘ ┌─┐ └─┘ │
@@ -39,4 +43,33 @@ In this repo a solver of _Problem 1_ aka `Red-Faced Cube` is implemented in [rus
 │ └───┐ ┌───┘ │
 │ ┌─┐ │ │ ┌─┐ │
 └─┘ └─┘ └─┘ └─┘
+```
+
+## 9x9
+
+```text
+╷ ┌─────┐ ┌─────╴
+│ └─┐ ┌─┘ └─┐ ┌─┐
+│ ┌─┘ └───┐ └─┘ │
+└─┘ ┌───┐ │ ┌───┘
+┌─┐ │ ┌─┘ │ └───┐
+│ └─┘ └───┘ ┌───┘
+│ ┌───┐ ┌─┐ │ ┌─┐
+│ └─┐ │ │ │ └─┘ │
+└───┘ └─┘ └─────┘
+```
+
+## 10x10
+
+```text
+╶─────┐ ┌─────┐ ┌─╴
+┌─┐ ┌─┘ └─┐ ┌─┘ └─┐
+│ └─┘ ┌───┘ └───┐ │
+│ ┌─┐ │ ┌─┐ ┌───┘ │
+└─┘ │ └─┘ │ │ ┌─┐ │
+┌─┐ └─────┘ └─┘ │ │
+│ └─────────────┘ │
+│ ┌───┐ ┌─┐ ┌───┐ │
+│ └─┐ │ │ │ │ ┌─┘ │
+└───┘ └─┘ └─┘ └───┘
 ```

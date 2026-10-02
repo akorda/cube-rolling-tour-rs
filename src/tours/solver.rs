@@ -19,7 +19,7 @@ impl Solver {
 
         Solver {
             board,
-            not_visited: 64 - 1,
+            not_visited: (SIZE as u8) * (SIZE as u8) - 1,
             dice: Dice::new(),
             current_pos: Point { row: 0, col: 0 },
             rolls: Vec::new(),

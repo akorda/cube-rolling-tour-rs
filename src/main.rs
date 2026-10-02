@@ -3,5 +3,6 @@ use tours::solver;
 mod tours;
 
 fn main() {
-    solver::Solver::new().solve();
+    let success = solver::Solver::new().solve();
+    println!("Success: {}!", success);
 }
