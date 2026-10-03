@@ -15,12 +15,16 @@ side red. The cube is moved from one square to an adjacent one by being tipped o
 on the line dividing the two cells. During each move, therefore, the cube makes one quarter-turn in a north,
 south, east or west direction.
 
-- Problem 1: Place the cube on the northwest corner of the board, red side up. Tour the board, resting once only
+## Problem 1
+
+Place the cube on the northwest corner of the board, red side up. Tour the board, resting once only
 on every cell and ending with the cube red side up in the northeast corner. At no time during the tour,
 however, is the cube allowed to rest with the red side up. (NOTE: It is not possible to make such a tour
 from corner to diagonally opposite corner.)
 
-- Problem 2: Place the cube on any cell, an uncolored side up. Make a "reentrant tour" of the board (one that
+## Problem 2
+
+Place the cube on any cell, an uncolored side up. Make a "reentrant tour" of the board (one that
 visits every cell once and returns the cube to its starting square) in such a way that at no time during the tour,
 including at the finish, will the cube's red side be up.
 
@@ -32,44 +36,4 @@ In this repo a solver of _Problem 1_ aka `Red-Faced Cube` is implemented in [rus
 
 > I just realized that we can create boards with sizes other than 8x8. In these cases, there may exist more than one solutions. The current implementation exits when finding the first one.
 
-### 8x8
-
-```text
-╶─────┐ ┌─────╴
-┌─┐ ┌─┘ └─┐ ┌─┐
-│ └─┘ ┌─┐ └─┘ │
-│ ┌─┐ │ │ ┌─┐ │
-│ │ └─┘ └─┘ │ │
-│ └───┐ ┌───┘ │
-│ ┌─┐ │ │ ┌─┐ │
-└─┘ └─┘ └─┘ └─┘
-```
-
-## 9x9
-
-```text
-╷ ┌─────┐ ┌─────╴
-│ └─┐ ┌─┘ └─┐ ┌─┐
-│ ┌─┘ └───┐ └─┘ │
-└─┘ ┌───┐ │ ┌───┘
-┌─┐ │ ┌─┘ │ └───┐
-│ └─┘ └───┘ ┌───┘
-│ ┌───┐ ┌─┐ │ ┌─┐
-│ └─┐ │ │ │ └─┘ │
-└───┘ └─┘ └─────┘
-```
-
-## 10x10
-
-```text
-╶─────┐ ┌─────┐ ┌─╴
-┌─┐ ┌─┘ └─┐ ┌─┘ └─┐
-│ └─┘ ┌───┘ └───┐ │
-│ ┌─┐ │ ┌─┐ ┌───┘ │
-└─┘ │ └─┘ │ │ ┌─┐ │
-┌─┐ └─────┘ └─┘ │ │
-│ └─────────────┘ │
-│ ┌───┐ ┌─┐ ┌───┐ │
-│ └─┐ │ │ │ │ ┌─┘ │
-└───┘ └─┘ └─┘ └───┘
-```
+Sample solutions are shown in this [file](docs/sample_solutions.md).
