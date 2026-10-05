@@ -1,4 +1,4 @@
-use super::types::*;
+use crate::tours::Direction;
 
 #[derive(Copy, Clone)]
 pub struct Dice {

@@ -1,11 +1,8 @@
 use super::dice::Dice;
-use super::types::*;
-use std::io::{self, IsTerminal, Write};
-
-const SIZE: usize = 8;
+use super::{Direction, Point, SIZE, Solution};
 
 #[derive(Clone)]
-pub struct Solver {
+pub struct RedFacedCubeSolver {
     board: [[bool; SIZE]; SIZE],
     not_visited: u8,
     dice: Dice,
@@ -13,12 +10,12 @@ pub struct Solver {
     rolls: Vec<Direction>,
 }
 
-impl Solver {
-    pub fn new() -> Solver {
+impl RedFacedCubeSolver {
+    pub fn new() -> Self {
         let mut board = [[false; SIZE]; SIZE];
         board[0][0] = true;
 
-        Solver {
+        RedFacedCubeSolver {
             board,
             not_visited: (SIZE as u8) * (SIZE as u8) - 1,
             dice: Dice::new(),
@@ -27,16 +24,18 @@ impl Solver {
         }
     }
 
-    pub fn solve(&mut self) -> bool {
-        self.print();
+    pub fn solve(&mut self) -> Option<Solution> {
+        super::print_board(Point { row: 0, col: 0 }, &self.rolls, true);
 
         // we just found a solution!
         if self.not_visited == 0 && self.current_pos.row == 0 && self.current_pos.col == SIZE - 1 {
-            return true;
+            return Some(Solution {
+                rolls: self.rolls.clone(),
+            });
         }
 
         if !self.is_end_reachable() {
-            return false;
+            return None;
         }
 
         let can_roll_up = self.can_roll_up();
@@ -59,11 +58,7 @@ impl Solver {
         }
 
         if no_rolls == 0 {
-            if self.not_visited == 0 {
-                return true;
-            }
-
-            return false;
+            return None;
         } else if no_rolls == 1 {
             // no need to clone a solution. Just continue with this one
             if can_roll_right {
@@ -81,36 +76,40 @@ impl Solver {
             if can_roll_right {
                 let mut clone = self.clone();
                 clone.roll_right();
-                if clone.solve() {
-                    return true;
+                let solution = clone.solve();
+                if solution.is_some() {
+                    return solution;
                 }
             }
 
             if can_roll_down {
                 let mut clone = self.clone();
                 clone.roll_down();
-                if clone.solve() {
-                    return true;
+                let solution = clone.solve();
+                if solution.is_some() {
+                    return solution;
                 }
             }
 
             if can_roll_left {
                 let mut clone = self.clone();
                 clone.roll_left();
-                if clone.solve() {
-                    return true;
+                let solution = clone.solve();
+                if solution.is_some() {
+                    return solution;
                 }
             }
 
             if can_roll_up {
                 let mut clone = self.clone();
                 clone.roll_up();
-                if clone.solve() {
-                    return true;
+                let solution = clone.solve();
+                if solution.is_some() {
+                    return solution;
                 }
             }
 
-            return false;
+            return None;
         }
     }
 
@@ -302,115 +301,6 @@ impl Solver {
         let next_number = self.dice.roll(Direction::Left).number();
         // since we move left, next cell cannot be the last cell
         next_number != 1
-    }
-
-    pub fn print(&self) {
-        const UP: u8 = 1;
-        const RIGHT: u8 = 2;
-        const DOWN: u8 = 4;
-        const LEFT: u8 = 8;
-
-        // For each cell, the sides through which the path enters or leaves it
-        let mut links = [[0u8; SIZE]; SIZE];
-
-        let mut p = Point { row: 0, col: 0 };
-        for roll in &self.rolls {
-            let (next, exit, entry) = match roll {
-                Direction::Up => (
-                    Point {
-                        row: p.row - 1,
-                        col: p.col,
-                    },
-                    UP,
-                    DOWN,
-                ),
-                Direction::Down => (
-                    Point {
-                        row: p.row + 1,
-                        col: p.col,
-                    },
-                    DOWN,
-                    UP,
-                ),
-                Direction::Left => (
-                    Point {
-                        row: p.row,
-                        col: p.col - 1,
-                    },
-                    LEFT,
-                    RIGHT,
-                ),
-                Direction::Right => (
-                    Point {
-                        row: p.row,
-                        col: p.col + 1,
-                    },
-                    RIGHT,
-                    LEFT,
-                ),
-            };
-
-            links[p.row][p.col] |= exit;
-            links[next.row][next.col] |= entry;
-            p = next;
-        }
-
-        // A board coordinate wider than one digit is shown by its last digit only,
-        // so the row/column labels still fit in a single character.
-        fn last_digit(n: usize) -> char {
-            char::from_digit((n % 10) as u32, 10).unwrap()
-        }
-
-        // Cells sit on even columns; odd columns hold the horizontal connectors
-        let mut output = String::new();
-
-        // column header
-        output.push_str("  ");
-        for col in 0..SIZE {
-            output.push(last_digit(col));
-            if col < SIZE - 1 {
-                output.push(' ');
-            }
-        }
-        output.push('\n');
-
-        for row in 0..SIZE {
-            output.push(last_digit(row));
-            output.push(' ');
-            for col in 0..SIZE {
-                output.push(match links[row][col] {
-                    x if x == UP | DOWN => '│',
-                    x if x == LEFT | RIGHT => '─',
-                    x if x == DOWN | RIGHT => '┌',
-                    x if x == DOWN | LEFT => '┐',
-                    x if x == UP | RIGHT => '└',
-                    x if x == UP | LEFT => '┘',
-                    UP => '╵',
-                    DOWN => '╷',
-                    LEFT => '╴',
-                    RIGHT => '╶',
-                    _ => ' ',
-                });
-
-                if col < SIZE - 1 {
-                    output.push(if links[row][col] & RIGHT != 0 {
-                        '─'
-                    } else {
-                        ' '
-                    });
-                }
-            }
-            output.push('\n');
-        }
-
-        // Redraw in place when writing to a terminal
-        let mut stdout = io::stdout();
-        if stdout.is_terminal() {
-            // move cursor to the top-left corner
-            print!("\x1B[H");
-        }
-        print!("{}", output);
-        stdout.flush().unwrap();
     }
 }
 

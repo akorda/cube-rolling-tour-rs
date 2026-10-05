@@ -32,7 +32,7 @@ Both problems have unique solutions, not counting rotations and reflections of t
 
 ## Rusty Cubes
 
-In this repo a solver of _Problem 1_ aka `Red-Faced Cube` is implemented in [rust](https://rust-lang.org/).
+In this repo solvers of _Problem 1_ aka `Red-Faced Cube` and _Problem 2_ aka `Reentrant Tour` are implemented in [rust](https://rust-lang.org/).
 
 > I just realized that we can create boards with sizes other than 8x8. In these cases, there may exist more than one solutions. The current implementation exits when finding the first one.
 
