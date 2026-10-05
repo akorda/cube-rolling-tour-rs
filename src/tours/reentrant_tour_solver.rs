@@ -1,5 +1,5 @@
 use super::dice::Dice;
-use super::{Direction, Point, SIZE, Solution};
+use super::{Direction, Point, SIZE, Solution, are_cells_reachable};
 
 #[derive(Clone)]
 pub struct ReentrantTourSolver {
@@ -292,69 +292,4 @@ impl ReentrantTourSolver {
         let next_number = self.dice.roll(Direction::Left).number();
         next_number != 1
     }
-}
-
-fn are_cells_reachable(
-    board: &[[bool; SIZE]; SIZE],
-    start_row: usize,
-    start_col: usize,
-    end_row: usize,
-    end_col: usize,
-) -> bool {
-    let mut examined = [[false; SIZE]; SIZE];
-    are_cells_reachable_int(board, &mut examined, start_row, start_col, end_row, end_col)
-}
-
-fn are_cells_reachable_int(
-    board: &[[bool; SIZE]; SIZE],
-    examined: &mut [[bool; SIZE]; SIZE],
-    start_row: usize,
-    start_col: usize,
-    end_row: usize,
-    end_col: usize,
-) -> bool {
-    if start_row == end_row && start_col == end_col {
-        return true;
-    }
-
-    if examined[start_row][start_col] {
-        return false;
-    }
-
-    examined[start_row][start_col] = true;
-
-    let visited = board[start_row][start_col];
-    if visited {
-        return false;
-    }
-
-    // top
-    if start_row != 0
-        && are_cells_reachable_int(board, examined, start_row - 1, start_col, end_row, end_col)
-    {
-        return true;
-    }
-
-    // bottom
-    if start_row != SIZE - 1
-        && are_cells_reachable_int(board, examined, start_row + 1, start_col, end_row, end_col)
-    {
-        return true;
-    }
-
-    // left
-    if start_col != 0
-        && are_cells_reachable_int(board, examined, start_row, start_col - 1, end_row, end_col)
-    {
-        return true;
-    }
-
-    // right
-    if start_col != SIZE - 1
-        && are_cells_reachable_int(board, examined, start_row, start_col + 1, end_row, end_col)
-    {
-        return true;
-    }
-
-    return false;
 }
