@@ -45,16 +45,16 @@ impl RedFacedCubeSolver {
 
         let mut no_rolls = 0;
         if can_roll_up {
-            no_rolls = no_rolls + 1;
+            no_rolls += 1;
         }
         if can_roll_down {
-            no_rolls = no_rolls + 1;
+            no_rolls += 1;
         }
         if can_roll_left {
-            no_rolls = no_rolls + 1;
+            no_rolls += 1;
         }
         if can_roll_right {
-            no_rolls = no_rolls + 1;
+            no_rolls += 1;
         }
 
         if no_rolls == 0 {
@@ -124,13 +124,7 @@ impl RedFacedCubeSolver {
             return true;
         }
 
-        let mut reachable = are_cells_reachable(
-            &self.board,
-            0,
-            SIZE - 1,
-            self.current_pos.row,
-            self.current_pos.col,
-        );
+        let reachable = are_cells_reachable(&self.board, 0, SIZE - 1, p.row, p.col);
         if !reachable {
             return false;
         }
@@ -143,7 +137,7 @@ impl RedFacedCubeSolver {
 
                 let visited = self.board[row][col];
                 if !visited {
-                    reachable = are_cells_reachable(&self.board, 0, SIZE - 1, row, col);
+                    let reachable = are_cells_reachable(&self.board, 0, SIZE - 1, row, col);
                     if !reachable {
                         return false;
                     }

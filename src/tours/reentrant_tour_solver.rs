@@ -47,16 +47,16 @@ impl ReentrantTourSolver {
 
         let mut no_rolls = 0;
         if can_roll_up {
-            no_rolls = no_rolls + 1;
+            no_rolls += 1;
         }
         if can_roll_down {
-            no_rolls = no_rolls + 1;
+            no_rolls += 1;
         }
         if can_roll_left {
-            no_rolls = no_rolls + 1;
+            no_rolls += 1;
         }
         if can_roll_right {
-            no_rolls = no_rolls + 1;
+            no_rolls += 1;
         }
 
         if no_rolls == 0 {
@@ -116,6 +116,19 @@ impl ReentrantTourSolver {
     }
 
     fn is_end_reachable(&self) -> bool {
+        let p = &self.current_pos;
+
+        let reachable = are_cells_reachable(
+            &self.board,
+            self.start_end.row,
+            self.start_end.col,
+            p.row,
+            p.col,
+        );
+        if !reachable {
+            return false;
+        }
+
         for row in 0..SIZE {
             for col in 0..SIZE {
                 if row == self.start_end.row && col == self.start_end.col {
