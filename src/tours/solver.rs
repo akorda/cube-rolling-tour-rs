@@ -4,6 +4,7 @@ use std::io::{self, IsTerminal, Write};
 
 const SIZE: usize = 8;
 
+#[derive(Clone)]
 pub struct Solver {
     board: [[bool; SIZE]; SIZE],
     not_visited: u8,
@@ -116,7 +117,7 @@ impl Solver {
     fn is_end_reachable(&self) -> bool {
         let p = &self.current_pos;
 
-        if p.row == 0 && p.col == 6 {
+        if p.row == 0 && p.col == SIZE - 2 {
             return true;
         }
 
@@ -152,17 +153,6 @@ impl Solver {
         }
 
         true
-    }
-
-    fn clone(&self) -> Solver {
-        let clone = Solver {
-            board: self.board.clone(),
-            rolls: self.rolls.clone(),
-            dice: self.dice,
-            current_pos: self.current_pos,
-            not_visited: self.not_visited,
-        };
-        clone
     }
 
     fn roll_up(&mut self) {
