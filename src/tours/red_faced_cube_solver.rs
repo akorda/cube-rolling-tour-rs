@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use super::dice::Dice;
 use super::{Direction, Point, SIZE, Solution, are_cells_reachable};
 
@@ -25,7 +27,17 @@ impl RedFacedCubeSolver {
     }
 
     pub fn solve(&mut self) -> Option<Solution> {
+        let mut state = HashSet::new();
+        self.solve_int(&mut state)
+    }
+
+    fn solve_int(&mut self, state: &mut HashSet<String>) -> Option<Solution> {
         super::print_board(Point { row: 0, col: 0 }, &self.rolls, true);
+
+        let key = self.get_key();
+        if state.contains(&key) {
+            return None;
+        }
 
         // we just found a solution!
         if self.not_visited == 0 && self.current_pos.row == 0 && self.current_pos.col == SIZE - 1 {
@@ -35,6 +47,7 @@ impl RedFacedCubeSolver {
         }
 
         if !self.is_end_reachable() {
+            state.insert(key);
             return None;
         }
 
@@ -58,6 +71,7 @@ impl RedFacedCubeSolver {
         }
 
         if no_rolls == 0 {
+            state.insert(key);
             return None;
         } else if no_rolls == 1 {
             // no need to clone a solution. Just continue with this one
@@ -71,12 +85,12 @@ impl RedFacedCubeSolver {
                 self.roll_up();
             }
 
-            return self.solve();
+            return self.solve_int(state);
         } else {
             if can_roll_right {
                 let mut clone = self.clone();
                 clone.roll_right();
-                let solution = clone.solve();
+                let solution = clone.solve_int(state);
                 if solution.is_some() {
                     return solution;
                 }
@@ -85,7 +99,7 @@ impl RedFacedCubeSolver {
             if can_roll_down {
                 let mut clone = self.clone();
                 clone.roll_down();
-                let solution = clone.solve();
+                let solution = clone.solve_int(state);
                 if solution.is_some() {
                     return solution;
                 }
@@ -94,7 +108,7 @@ impl RedFacedCubeSolver {
             if can_roll_left {
                 let mut clone = self.clone();
                 clone.roll_left();
-                let solution = clone.solve();
+                let solution = clone.solve_int(state);
                 if solution.is_some() {
                     return solution;
                 }
@@ -103,12 +117,13 @@ impl RedFacedCubeSolver {
             if can_roll_up {
                 let mut clone = self.clone();
                 clone.roll_up();
-                let solution = clone.solve();
+                let solution = clone.solve_int(state);
                 if solution.is_some() {
                     return solution;
                 }
             }
 
+            state.insert(key);
             return None;
         }
     }
@@ -295,5 +310,17 @@ impl RedFacedCubeSolver {
         let next_number = self.dice.roll(Direction::Left).number();
         // since we move left, next cell cannot be the last cell
         next_number != 1
+    }
+
+    fn get_key(&self) -> String {
+        let board = self
+            .board
+            .as_flattened()
+            .iter()
+            .map(|b| if *b { "1" } else { "0" })
+            .collect::<String>();
+        let pos = format!("{}{}", self.current_pos.row, self.current_pos.col);
+        let face = self.dice.number().to_string();
+        format!("{}{}{}", board, pos, face)
     }
 }

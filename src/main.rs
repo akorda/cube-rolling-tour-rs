@@ -1,7 +1,6 @@
 use tours::reentrant_tour_solver;
 
 use crate::tours::{Point, red_faced_cube_solver};
-// use tours::solver;
 
 mod tours;
 
